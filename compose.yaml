@@ -2,7 +2,9 @@ name: levichords
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     command:
       - sh
       - -c

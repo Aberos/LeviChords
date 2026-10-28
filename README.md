@@ -155,6 +155,36 @@ Como o servidor roda com `--noreload`, reinicie a aplicação após alterações
 docker compose restart app
 ```
 
+## Publicação no Render
+
+O `Dockerfile` da raiz gera a imagem de produção: instala só as dependências da aplicação, reúne os arquivos estáticos e sobe o site com o gunicorn. O `Dockerfile.dev` é o usado pelo Docker Compose no desenvolvimento.
+
+Ao iniciar, o contêiner de produção executa `deploy/start.sh`, que aplica as migrações, cria o primeiro usuário quando as variáveis `DJANGO_SUPERUSER_*` estão definidas e inicia o gunicorn na porta informada em `PORT`.
+
+1. No Render, crie um banco em **New → Postgres** e copie a **Internal Database URL**.
+2. Crie o site em **New → Web Service**, escolha o repositório do GitHub e o ambiente **Docker**.
+3. Em **Environment**, defina as variáveis abaixo e conclua a criação.
+
+| Variável | Valor |
+| --- | --- |
+| `DJANGO_SECRET_KEY` | Uma chave longa e aleatória |
+| `DATABASE_URL` | A Internal Database URL do banco |
+| `DJANGO_HTTPS` | `1`, para os cookies de sessão trafegarem só por HTTPS |
+| `DJANGO_SUPERUSER_USERNAME` | Usuário que cadastra as cifras |
+| `DJANGO_SUPERUSER_EMAIL` | E-mail desse usuário |
+| `DJANGO_SUPERUSER_PASSWORD` | Senha desse usuário |
+| `DJANGO_ALLOWED_HOSTS` | Opcional: domínios próprios, separados por vírgula |
+
+O endereço `.onrender.com` do serviço é liberado automaticamente. A cada `git push` na branch principal, o Render gera uma nova versão do site.
+
+Depois do primeiro acesso, as variáveis `DJANGO_SUPERUSER_*` podem ser removidas. Enquanto existirem, cada inicialização apenas informa no log que o usuário já existe.
+
+Para testar a imagem de produção localmente:
+
+```sh
+docker build -t levichords .
+```
+
 ## Padrões de código
 
 - PEP 8, formatado pelo Black com 79 colunas.
@@ -187,4 +217,5 @@ apps/
   songs/      músicas, reconhecimento e transposição de acordes (chords.py)
   setlists/   repertórios e ordem das músicas
 config/       configurações do Django
+deploy/       script de inicialização da imagem de produção
 ```

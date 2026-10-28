@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlsplit
 
 import django_stubs_ext
 from dotenv import load_dotenv
@@ -13,8 +14,24 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def database_from_url(url: str) -> dict[str, Any]:
+    """Return PostgreSQL settings from a ``postgresql://`` connection URL."""
+    parts = urlsplit(url)
+    return {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": unquote(parts.path.lstrip("/")),
+        "USER": unquote(parts.username or ""),
+        "PASSWORD": unquote(parts.password or ""),
+        "HOST": parts.hostname or "localhost",
+        "PORT": str(parts.port or 5432),
+    }
+
+
 def _database() -> dict[str, Any]:
     """Return PostgreSQL settings when configured, otherwise SQLite."""
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return database_from_url(database_url)
     if not os.getenv("POSTGRES_DB"):
         return {
             "ENGINE": "django.db.backends.sqlite3",
@@ -37,6 +54,9 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 ]
+RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -52,6 +72,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -122,11 +143,28 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 _static_prefix = SCRIPT_PREFIX.rstrip("/") if SCRIPT_PREFIX else ""
 STATIC_URL = f"{_static_prefix}/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": (
+            "django.contrib.staticfiles.storage.StaticFilesStorage"
+            if DEBUG
+            else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        ),
+    },
+}
+WHITENOISE_AUTOREFRESH = DEBUG
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+
+HTTPS_ONLY = os.getenv("DJANGO_HTTPS", "0") == "1"
+SESSION_COOKIE_SECURE = HTTPS_ONLY
+CSRF_COOKIE_SECURE = HTTPS_ONLY
 
 APPLICATION_NAME = "LeviChords"

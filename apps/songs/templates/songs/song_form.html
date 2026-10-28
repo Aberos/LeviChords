@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Editar {{ object.title }}{% else %}Nova música{% endif %} · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="reader-nav">
+    <a class="back-link" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'songs:list' %}{% endif %}">{% include "includes/icon.html" with name="back" %}<span>{% if object %}{{ object.title }}{% else %}Músicas{% endif %}</span></a>
+  </div>
+  <h1 class="form-title">{% if object %}Editar música{% else %}Nova música{% endif %}</h1>
+
+  {% if preview is not None %}
+    <section id="previa" class="preview">
+      <div class="preview-header">
+        <h2>Pré-visualização</h2>
+        <a class="button button-small" href="#id_content">{% include "includes/icon.html" with name="edit" %}<span>Editar cifra</span></a>
+      </div>
+      <p class="preview-hint">Ainda não foi salva. Confira as cores: acordes em laranja e seções em azul.</p>
+      <div class="card preview-sheet">
+        {% if preview %}
+          {% include "includes/sheet.html" with lines=preview %}
+        {% else %}
+          <p class="empty-inline">A cifra está vazia.</p>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  <form method="post" class="form card">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <div class="actions">
+      <a class="button" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'songs:list' %}{% endif %}">Cancelar</a>
+      <button type="submit" class="button button-primary">Salvar</button>
+    </div>
+    <button type="submit" name="preview" value="1" class="button button-block button-preview" formaction="#previa" formnovalidate>Pré-visualizar</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,17 @@
+.git
+.venv
+venv
+.env
+.env.*
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.vscode
+.agents
+.codex
+.aws
+media
+staticfiles
+dist
+build

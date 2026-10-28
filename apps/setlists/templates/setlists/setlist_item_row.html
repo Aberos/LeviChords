@@ -1,0 +1,23 @@
+<div class="setlist-item">
+  {% for hidden in item.hidden_fields %}{{ hidden }}{% endfor %}
+  {{ item.non_field_errors }}
+  <div class="field field-song">
+    <label for="{{ item.song.id_for_label }}">{{ item.song.label }}</label>
+    {{ item.song }}
+    {{ item.song.errors }}
+  </div>
+  <div class="item-row">
+    <div class="field field-semitones">
+      <label for="{{ item.semitones.id_for_label }}">{{ item.semitones.label }}</label>
+      {{ item.semitones }}
+      {{ item.semitones.errors }}
+    </div>
+    <div class="item-controls">
+      <button type="button" class="button button-square" data-action="up" aria-label="Mover para cima">{% include "includes/icon.html" with name="up" %}</button>
+      <button type="button" class="button button-square" data-action="down" aria-label="Mover para baixo">{% include "includes/icon.html" with name="down" %}</button>
+    </div>
+  </div>
+  {% if item.instance.pk %}
+    <label class="remove">{{ item.DELETE }} Remover do repertório</label>
+  {% endif %}
+</div>

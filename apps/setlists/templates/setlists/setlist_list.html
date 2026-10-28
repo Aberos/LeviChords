@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Repertórios · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Repertórios</h1>
+      <p class="page-subtitle">{{ page_obj.paginator.count }} repertório{{ page_obj.paginator.count|pluralize }}</p>
+    </div>
+    <a class="button button-primary fab" href="{% url 'setlists:create' %}">
+      {% include "includes/icon.html" with name="add" %}<span>Novo repertório</span>
+    </a>
+  </div>
+
+  {% if setlists %}
+    <ul class="item-list">
+      {% for setlist in setlists %}
+        <li>
+          <a class="item-link" href="{{ setlist.get_absolute_url }}">
+            <span class="date-tile">
+              <span class="date-day">{{ setlist.date|date:"d" }}</span>
+              <span class="date-month">{{ setlist.date|date:"M/y" }}</span>
+            </span>
+            <span class="item-main">
+              <span class="item-title">{{ setlist.date|date:"l"|capfirst }}</span>
+              {% if setlist.description %}<span class="item-detail">{{ setlist.description }}</span>{% endif %}
+            </span>
+            <span class="badge badge-muted">{{ setlist.song_count }} música{{ setlist.song_count|pluralize }}</span>
+            <span class="chevron">{% include "includes/icon.html" with name="chevron" %}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% include "includes/pagination.html" %}
+  {% else %}
+    <div class="empty">
+      {% include "includes/icon.html" with name="setlist" %}
+      <p>Nenhum repertório cadastrado.</p>
+    </div>
+  {% endif %}
+{% endblock %}

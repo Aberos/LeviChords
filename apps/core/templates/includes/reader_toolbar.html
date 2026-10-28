@@ -1,0 +1,18 @@
+<nav class="reader-toolbar" aria-label="Controles de leitura">
+  <div class="reader-more" id="reader-more">
+    <button type="button" data-action="fullscreen" id="fullscreen-button" class="toolbar-fullscreen">Tela cheia</button>
+    <button type="button" data-action="fit" id="fit-button">Ajustar à tela</button>
+    <button type="button" data-action="columns" id="columns-button" class="toolbar-columns">1 coluna</button>
+    <button type="button" data-action="tabs" id="tabs-button" class="toolbar-tabs">Sem tabs</button>
+    <button type="button" data-action="scroll" id="scroll-button">Rolar</button>
+    <button type="button" data-action="theme">Tema</button>
+  </div>
+  <button type="button" data-action="font-down" aria-label="Diminuir letra">A−</button>
+  <button type="button" data-action="font-up" aria-label="Aumentar letra">A+</button>
+  {% if sheet %}
+    <a class="button" href="?semitons={{ sheet.semitones_down }}" aria-label="Baixar meio tom">Tom −</a>
+    <a class="button" href="?semitons={{ sheet.semitones_up }}" aria-label="Subir meio tom">Tom +</a>
+  {% endif %}
+  <button type="button" data-action="pages" id="pages-button" aria-label="Virar páginas com um toque">Páginas</button>
+  <button type="button" data-action="more" id="more-button" aria-label="Mais opções">Mais</button>
+</nav>

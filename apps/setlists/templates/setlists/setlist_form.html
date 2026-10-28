@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if object.pk %}Editar repertório{% else %}Novo repertório{% endif %} · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="reader-nav">
+    <a class="back-link" href="{% if object.pk %}{{ object.get_absolute_url }}{% else %}{% url 'setlists:list' %}{% endif %}">{% include "includes/icon.html" with name="back" %}<span>Repertórios</span></a>
+  </div>
+  <h1 class="form-title">{% if object.pk %}Editar repertório{% else %}Novo repertório{% endif %}</h1>
+  <form method="post" class="form">
+    {% csrf_token %}
+    <div class="card">
+      {{ form.as_div }}
+    </div>
+
+    <h2 class="section-title">Músicas</h2>
+    {{ formset.management_form }}
+    {{ formset.non_form_errors }}
+    <div id="setlist-items" class="setlist-items" data-prefix="{{ formset.prefix }}">
+      {% for item in formset %}
+        {% include "setlists/setlist_item_row.html" %}
+      {% endfor %}
+    </div>
+    <button type="button" id="add-item" class="button button-add">
+      {% include "includes/icon.html" with name="add" %}<span>Adicionar música</span>
+    </button>
+
+    <div class="actions">
+      <a class="button" href="{% if object.pk %}{{ object.get_absolute_url }}{% else %}{% url 'setlists:list' %}{% endif %}">Cancelar</a>
+      <button type="submit" class="button button-primary">Salvar</button>
+    </div>
+  </form>
+
+  <script type="text/template" id="empty-item">
+    {% include "setlists/setlist_item_row.html" with item=formset.empty_form %}
+  </script>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'setlists/js/setlist_form.js' %}"></script>
+{% endblock %}

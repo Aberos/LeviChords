@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ song.title }} · LeviChords{% endblock %}
+
+{% block body_class %}reading{% endblock %}
+
+{% block content %}
+  <div class="reader-nav">
+    <a class="back-link" href="{% url 'songs:list' %}">{% include "includes/icon.html" with name="back" %}<span>Músicas</span></a>
+    <span class="reader-nav-actions">
+      <a class="icon-button" href="{% url 'songs:update' song.pk %}" aria-label="Editar" title="Editar">{% include "includes/icon.html" with name="edit" %}</a>
+      <a class="icon-button icon-button-danger" href="{% url 'songs:delete' song.pk %}" aria-label="Excluir" title="Excluir">{% include "includes/icon.html" with name="delete" %}</a>
+    </span>
+  </div>
+
+  <article id="reader" class="reader">
+    <header class="song-header">
+      <h1>{{ song.title }}</h1>
+      {% if song.artist %}<p class="artist">{{ song.artist }}</p>{% endif %}
+      {% if sheet.key %}
+        <p class="key">
+          Tom: <strong>{{ sheet.key }}</strong>
+          {% if sheet.semitones %}
+            <span class="original-key">original {{ song.key }}</span>
+            <a href="?semitons=0">restaurar</a>
+          {% endif %}
+        </p>
+      {% endif %}
+    </header>
+    {% include "includes/sheet.html" with lines=sheet.lines %}
+  </article>
+
+  {% include "includes/reader_toolbar.html" %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Músicas · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Músicas</h1>
+      <p class="page-subtitle">{{ page_obj.paginator.count }} música{{ page_obj.paginator.count|pluralize }}</p>
+    </div>
+    <a class="button button-primary fab" href="{% url 'songs:create' %}">
+      {% include "includes/icon.html" with name="add" %}<span>Nova música</span>
+    </a>
+  </div>
+
+  <form method="get" class="search" role="search">
+    <div class="search-field">
+      {% include "includes/icon.html" with name="search" %}
+      <input type="search" name="q" value="{{ term }}" placeholder="Buscar por título ou artista" aria-label="Buscar">
+    </div>
+    <button type="submit" class="button">Buscar</button>
+  </form>
+
+  {% if songs %}
+    <ul class="item-list">
+      {% for song in songs %}
+        <li>
+          <a class="item-link" href="{{ song.get_absolute_url }}">
+            <span class="item-main">
+              <span class="item-title">{{ song.title }}</span>
+              {% if song.artist %}<span class="item-detail">{{ song.artist }}</span>{% endif %}
+            </span>
+            {% if song.key %}<span class="badge">{{ song.key }}</span>{% endif %}
+            <span class="chevron">{% include "includes/icon.html" with name="chevron" %}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% include "includes/pagination.html" %}
+  {% else %}
+    <div class="empty">
+      {% include "includes/icon.html" with name="song" %}
+      <p>{% if term %}Nenhuma música encontrada para “{{ term }}”.{% else %}Nenhuma música cadastrada.{% endif %}</p>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Excluir · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="card confirm-card">
+    <span class="confirm-icon">{% include "includes/icon.html" with name="warning" %}</span>
+    <h1>Excluir</h1>
+    <p>Tem certeza de que deseja excluir <strong>{{ object }}</strong>? Essa ação não pode ser desfeita.</p>
+    <form method="post" class="actions">
+      {% csrf_token %}
+      <a class="button" href="{{ object.get_absolute_url }}">Cancelar</a>
+      <button type="submit" class="button button-danger">Excluir</button>
+    </form>
+  </div>
+{% endblock %}

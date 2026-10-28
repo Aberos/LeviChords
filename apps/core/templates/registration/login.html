@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Entrar · LeviChords{% endblock %}
+
+{% block body_class %}login-page{% endblock %}
+
+{% block content %}
+  <div class="card login-card">
+    <span class="login-logo">{% include "includes/icon.html" with name="song" %}</span>
+    <h1>Entrar</h1>
+    <p class="login-hint">Acesso restrito aos músicos cadastrados.</p>
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Usuário</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+      <div class="field">
+        <label for="{{ form.password.id_for_label }}">Senha</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+      <label class="checkbox" for="{{ form.remember.id_for_label }}">{{ form.remember }} {{ form.remember.label }}</label>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="button button-primary button-block">Entrar</button>
+    </form>
+  </div>
+{% endblock %}

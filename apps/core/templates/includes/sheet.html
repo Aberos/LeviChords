@@ -1,0 +1,1 @@
+{% load sheets %}<div class="sheet">{% for block in lines|blocks %}<div class="block{% if block.is_tab %} block-tab{% endif %}">{% for line in block.lines %}<div class="line line-{{ line.kind }}">{{ line.text }}</div>{% endfor %}</div>{% endfor %}</div>

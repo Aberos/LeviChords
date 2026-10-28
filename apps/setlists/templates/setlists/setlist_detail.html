@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Repertório {{ setlist.date|date:"d/m/Y" }} · LeviChords{% endblock %}
+
+{% block body_class %}reading{% endblock %}
+
+{% block content %}
+  <div class="reader-nav">
+    <a class="back-link" href="{% url 'setlists:list' %}">{% include "includes/icon.html" with name="back" %}<span>Repertórios</span></a>
+    <span class="reader-nav-actions">
+      <a class="icon-button" href="{% url 'setlists:update' setlist.pk %}" aria-label="Editar" title="Editar">{% include "includes/icon.html" with name="edit" %}</a>
+      <a class="icon-button icon-button-danger" href="{% url 'setlists:delete' setlist.pk %}" aria-label="Excluir" title="Excluir">{% include "includes/icon.html" with name="delete" %}</a>
+    </span>
+  </div>
+
+  <article id="reader" class="reader">
+    <header class="song-header">
+      <h1>{{ setlist.date|date:"l"|capfirst }}, {{ setlist.date|date:"d/m/Y" }}</h1>
+      {% if setlist.description %}<p class="artist">{{ setlist.description }}</p>{% endif %}
+    </header>
+
+    {% if sheets %}
+      <ol class="setlist-index">
+        {% for sheet in sheets %}
+          <li>
+            <a href="#musica-{{ forloop.counter }}">
+              <span class="song-number">{{ forloop.counter }}</span>
+              <span class="index-title">{{ sheet.song.title }}</span>
+              {% if sheet.key %}<span class="badge">{{ sheet.key }}</span>{% endif %}
+            </a>
+          </li>
+        {% endfor %}
+      </ol>
+
+      {% for sheet in sheets %}
+        <section id="musica-{{ forloop.counter }}" class="setlist-song">
+          <h2>
+            <span class="song-number">{{ forloop.counter }}</span>
+            <span class="index-title">{{ sheet.song.title }}</span>
+            {% if sheet.key %}<span class="badge">{{ sheet.key }}</span>{% endif %}
+          </h2>
+          {% include "includes/sheet.html" with lines=sheet.lines %}
+          <a class="back-to-top" href="#reader">{% include "includes/icon.html" with name="up" %}<span>Voltar à lista</span></a>
+        </section>
+      {% endfor %}
+    {% else %}
+      <div class="empty">
+        {% include "includes/icon.html" with name="setlist" %}
+        <p>Este repertório ainda não tem músicas.</p>
+      </div>
+    {% endif %}
+  </article>
+
+  {% include "includes/reader_toolbar.html" with sheet=None %}
+{% endblock %}

@@ -8,9 +8,11 @@
       <h1>Repertórios</h1>
       <p class="page-subtitle">{{ page_obj.paginator.count }} repertório{{ page_obj.paginator.count|pluralize }}</p>
     </div>
-    <a class="button button-primary fab" href="{% url 'setlists:create' %}">
-      {% include "includes/icon.html" with name="add" %}<span>Novo repertório</span>
-    </a>
+    {% if perms.setlists.add_setlist %}
+      <a class="button button-primary fab" href="{% url 'setlists:create' %}">
+        {% include "includes/icon.html" with name="add" %}<span>Novo repertório</span>
+      </a>
+    {% endif %}
   </div>
 
   {% if setlists %}

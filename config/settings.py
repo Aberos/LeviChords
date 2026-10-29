@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.songs",
     "apps.setlists",
+    "apps.users",
 ]
 
 MIDDLEWARE = [

@@ -25,8 +25,15 @@
               {% include "includes/icon.html" with name="song" %}
               <span>Músicas</span>
             </a>
+            {% if perms.auth.view_user %}
+              <a class="tab{% if section == 'users' %} tab-active{% endif %}" href="{% url 'users:list' %}">
+                {% include "includes/icon.html" with name="users" %}
+                <span>Usuários</span>
+              </a>
+            {% endif %}
           </nav>
         {% endwith %}
+        <a class="icon-button{% if request.resolver_match.namespace == 'account' %} icon-button-active{% endif %}" href="{% url 'account:profile' %}" aria-label="Minha conta" title="Minha conta">{% include "includes/icon.html" with name="person" %}</a>
         <form method="post" action="{% url 'logout' %}" class="logout-form">
           {% csrf_token %}
           <button type="submit" class="icon-button" aria-label="Sair" title="Sair">

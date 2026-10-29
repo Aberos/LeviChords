@@ -42,7 +42,15 @@ As páginas funcionam em navegadores antigos, como o do Android 4.4. Os recursos
 
 - Todas as páginas exigem login.
 - A opção "Lembrar de mim" mantém o acesso por 30 dias. Sem ela, a sessão termina quando o navegador é fechado.
-- Os usuários são criados com `createsuperuser` ou pelo `/admin/`.
+- O primeiro usuário é criado com `createsuperuser`. Depois, os administradores cadastram os outros em **Usuários** (`/usuarios/`).
+- Cada usuário troca o próprio nome e a própria senha em **Minha conta** (`/conta/`), pelo ícone de pessoa no topo.
+- Há três níveis de acesso:
+
+| Nível | Pode |
+| --- | --- |
+| Leitor | ver músicas e repertórios |
+| Editor | também cadastrar, editar e excluir músicas e repertórios |
+| Administrador | também cadastrar usuários, escolher o nível de cada um, trocar senhas e desativar contas |
 
 ## Formato da cifra
 
@@ -105,7 +113,7 @@ As migrações são aplicadas na inicialização. Com as portas do `.env.example
 - Site: http://localhost:8000/
 - Administração: http://localhost:8000/admin/
 
-Para criar o usuário que cadastra as cifras:
+Para criar o primeiro administrador:
 
 ```sh
 docker compose exec app python manage.py createsuperuser

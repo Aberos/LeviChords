@@ -27,6 +27,10 @@ def protected_urls(song: Song) -> list[str]:
         reverse("setlists:detail", args=[setlist.pk]),
         reverse("setlists:update", args=[setlist.pk]),
         reverse("setlists:delete", args=[setlist.pk]),
+        reverse("users:list"),
+        reverse("users:create"),
+        reverse("account:profile"),
+        reverse("account:password"),
     ]
 
 

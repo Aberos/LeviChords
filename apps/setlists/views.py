@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import QuerySet
 from django.forms import Form
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -35,9 +36,10 @@ class HomeRedirectView(RedirectView):
         return setlist.get_absolute_url()
 
 
-class SetlistListView(ListView[Setlist]):
+class SetlistListView(PermissionRequiredMixin, ListView[Setlist]):
     """List setlists, newest first."""
 
+    permission_required = "setlists.view_setlist"
     template_name = "setlists/setlist_list.html"
     context_object_name = "setlists"
     paginate_by = 20
@@ -47,9 +49,10 @@ class SetlistListView(ListView[Setlist]):
         return SetlistRepository.list_with_song_count()
 
 
-class SetlistDetailView(DetailView[Setlist]):
+class SetlistDetailView(PermissionRequiredMixin, DetailView[Setlist]):
     """Show the songs of a setlist, each one opening on its own page."""
 
+    permission_required = "setlists.view_setlist"
     template_name = "setlists/setlist_detail.html"
     context_object_name = "setlist"
 
@@ -58,9 +61,10 @@ class SetlistDetailView(DetailView[Setlist]):
         return SetlistRepository.with_songs()
 
 
-class SetlistSongView(DetailView[Setlist]):
+class SetlistSongView(PermissionRequiredMixin, DetailView[Setlist]):
     """Show a single song of a setlist in reading mode."""
 
+    permission_required = "setlists.view_setlist"
     template_name = "setlists/setlist_song.html"
     context_object_name = "setlist"
 
@@ -93,12 +97,20 @@ class SetlistSongView(DetailView[Setlist]):
         return context
 
 
-class SetlistEditView(UpdateView[Setlist, SetlistForm]):
+class SetlistEditView(
+    PermissionRequiredMixin, UpdateView[Setlist, SetlistForm]
+):
     """Create or edit a setlist together with its ordered songs."""
 
     model = Setlist
     form_class = SetlistForm
     template_name = "setlists/setlist_form.html"
+
+    def get_permission_required(self) -> tuple[str, ...]:
+        """Require the add permission to create and change to edit."""
+        if "pk" not in self.kwargs:
+            return ("setlists.add_setlist",)
+        return ("setlists.change_setlist",)
 
     def get_object(self, queryset: QuerySet[Setlist] | None = None) -> Setlist:
         """Return the setlist being edited, or a new one without ``pk``."""
@@ -131,9 +143,10 @@ class SetlistEditView(UpdateView[Setlist, SetlistForm]):
         )
 
 
-class SetlistDeleteView(DeleteView[Setlist, Form]):
+class SetlistDeleteView(PermissionRequiredMixin, DeleteView[Setlist, Form]):
     """Delete a setlist, keeping its songs."""
 
+    permission_required = "setlists.delete_setlist"
     model = Setlist
     template_name = "confirm_delete.html"
     success_url = reverse_lazy("setlists:list")

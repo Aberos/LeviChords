@@ -171,3 +171,13 @@ def test_song_outside_the_setlist_is_not_found(
     setlist = _setlist_with_two_songs(song)
     response = logged_client.get(_song_url(setlist, number))
     assert response.status_code == 404
+
+
+def test_form_marks_song_selects_for_the_search(
+    logged_client: Client, song: Song
+) -> None:
+    """The song selects are marked for the searchable picker."""
+    response = logged_client.get(reverse("setlists:create"))
+    content = response.content.decode()
+    assert "data-song-picker" in content
+    assert "song_picker.js" in content

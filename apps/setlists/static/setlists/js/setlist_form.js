@@ -51,9 +51,13 @@
     holder.innerHTML = template.innerHTML
       .replace(/__prefix__/g, index)
       .replace(/^\s+|\s+$/g, "");
-    list.appendChild(holder.firstChild);
+    var row = holder.firstChild;
+    list.appendChild(row);
     total.value = index + 1;
     renumber();
+    if (window.songPicker) {
+      window.songPicker.enhanceAll(row);
+    }
   }
 
   function closestAction(element) {

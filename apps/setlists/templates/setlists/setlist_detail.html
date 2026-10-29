@@ -6,8 +6,8 @@
   <div class="reader-nav">
     <a class="back-link" href="{% url 'setlists:list' %}">{% include "includes/icon.html" with name="back" %}<span>Repertórios</span></a>
     <span class="reader-nav-actions">
-      <a class="icon-button" href="{% url 'setlists:update' setlist.pk %}" aria-label="Editar" title="Editar">{% include "includes/icon.html" with name="edit" %}</a>
-      <a class="icon-button icon-button-danger" href="{% url 'setlists:delete' setlist.pk %}" aria-label="Excluir" title="Excluir">{% include "includes/icon.html" with name="delete" %}</a>
+      {% if perms.setlists.change_setlist %}<a class="icon-button" href="{% url 'setlists:update' setlist.pk %}" aria-label="Editar" title="Editar">{% include "includes/icon.html" with name="edit" %}</a>{% endif %}
+      {% if perms.setlists.delete_setlist %}<a class="icon-button icon-button-danger" href="{% url 'setlists:delete' setlist.pk %}" aria-label="Excluir" title="Excluir">{% include "includes/icon.html" with name="delete" %}</a>{% endif %}
     </span>
   </div>
 

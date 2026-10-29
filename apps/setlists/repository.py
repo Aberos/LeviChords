@@ -12,8 +12,10 @@ class SetlistRepository:
 
     @staticmethod
     def list_with_song_count() -> QuerySet[Setlist]:
-        """Return every setlist annotated with ``song_count``."""
-        return Setlist.objects.annotate(song_count=Count("items"))
+        """Return every setlist, newest first, with ``song_count``."""
+        return Setlist.objects.annotate(song_count=Count("items")).order_by(
+            "-date", "-pk"
+        )
 
     @staticmethod
     def with_songs() -> QuerySet[Setlist]:

@@ -8,9 +8,11 @@
       <h1>Músicas</h1>
       <p class="page-subtitle">{{ page_obj.paginator.count }} música{{ page_obj.paginator.count|pluralize }}</p>
     </div>
-    <a class="button button-primary fab" href="{% url 'songs:create' %}">
-      {% include "includes/icon.html" with name="add" %}<span>Nova música</span>
-    </a>
+    {% if perms.songs.add_song %}
+      <a class="button button-primary fab" href="{% url 'songs:create' %}">
+        {% include "includes/icon.html" with name="add" %}<span>Nova música</span>
+      </a>
+    {% endif %}
   </div>
 
   <form method="get" class="search" role="search">

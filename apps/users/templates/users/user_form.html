@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{% if account %}Editar {{ account.username }}{% else %}Novo usuário{% endif %} · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="reader-nav">
+    <a class="back-link" href="{% url 'users:list' %}">{% include "includes/icon.html" with name="back" %}<span>Usuários</span></a>
+  </div>
+  <h1 class="form-title">{% if account %}Editar usuário{% else %}Novo usuário{% endif %}</h1>
+
+  <form method="post" class="form card">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <div class="actions">
+      <a class="button" href="{% url 'users:list' %}">Cancelar</a>
+      <button type="submit" class="button button-primary">Salvar</button>
+    </div>
+  </form>
+{% endblock %}

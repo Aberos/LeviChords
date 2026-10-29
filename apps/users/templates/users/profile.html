@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Minha conta · LeviChords{% endblock %}
+
+{% block content %}
+  <h1 class="form-title">Minha conta</h1>
+
+  <form method="post" class="form card">
+    {% csrf_token %}
+    <div class="field">
+      <label>Usuário</label>
+      <p class="account-info">{{ account.username }}{% if role %} <span class="badge">{{ role.label }}</span>{% endif %}</p>
+    </div>
+    {{ form.as_div }}
+    <div class="actions">
+      <button type="submit" class="button button-primary">Salvar nome</button>
+    </div>
+  </form>
+
+  <h2 class="section-title">Senha</h2>
+  <div class="card account-password">
+    <p>Troque a sua senha quando quiser. Você continua conectado neste aparelho.</p>
+    <a class="button button-block" href="{% url 'account:password' %}">Alterar senha</a>
+  </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Sem permissão · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="card confirm-card">
+    <span class="confirm-icon">{% include "includes/icon.html" with name="warning" %}</span>
+    <h1>Sem permissão</h1>
+    <p>O seu nível de acesso não permite abrir esta página. Fale com um administrador se precisar.</p>
+    <div class="actions">
+      <a class="button button-primary" href="{% url 'home' %}">Voltar ao início</a>
+    </div>
+  </div>
+{% endblock %}

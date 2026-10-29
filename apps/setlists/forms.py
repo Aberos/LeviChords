@@ -43,7 +43,10 @@ class SetlistItemForm(forms.ModelForm[SetlistItem]):
 
         model = SetlistItem
         fields = ["song", "position", "semitones"]
-        widgets = {"position": forms.HiddenInput()}
+        widgets = {
+            "position": forms.HiddenInput(),
+            "song": forms.Select(attrs={"data-song-picker": ""}),
+        }
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Make the position optional, since it is filled by the page."""

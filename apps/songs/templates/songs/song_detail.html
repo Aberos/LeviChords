@@ -8,8 +8,8 @@
   <div class="reader-nav">
     <a class="back-link" href="{% url 'songs:list' %}">{% include "includes/icon.html" with name="back" %}<span>Músicas</span></a>
     <span class="reader-nav-actions">
-      <a class="icon-button" href="{% url 'songs:update' song.pk %}" aria-label="Editar" title="Editar">{% include "includes/icon.html" with name="edit" %}</a>
-      <a class="icon-button icon-button-danger" href="{% url 'songs:delete' song.pk %}" aria-label="Excluir" title="Excluir">{% include "includes/icon.html" with name="delete" %}</a>
+      {% if perms.songs.change_song %}<a class="icon-button" href="{% url 'songs:update' song.pk %}" aria-label="Editar" title="Editar">{% include "includes/icon.html" with name="edit" %}</a>{% endif %}
+      {% if perms.songs.delete_song %}<a class="icon-button icon-button-danger" href="{% url 'songs:delete' song.pk %}" aria-label="Excluir" title="Excluir">{% include "includes/icon.html" with name="delete" %}</a>{% endif %}
     </span>
   </div>
 

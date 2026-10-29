@@ -164,6 +164,10 @@ p {
   color: #eceef2;
 }
 
+.icon-button-active {
+  color: #ffc83d;
+}
+
 .icon-button-danger:hover,
 .icon-button-danger:active {
   color: #ff8a80;
@@ -456,6 +460,131 @@ input[type="checkbox"] {
   line-height: 1.35;
   white-space: pre;
   overflow-x: auto;
+}
+
+.account-info {
+  margin: 0;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.account-info .badge {
+  margin-left: 8px;
+}
+
+.account-password p {
+  margin: 0 0 14px;
+  color: #8d95a3;
+  font-size: 15px;
+}
+
+.song-picker {
+  position: relative;
+}
+
+.song-picker-native {
+  display: none;
+}
+
+.song-picker-toggle {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 40px 11px 14px;
+  border: 1px solid #2f3540;
+  border-radius: 10px;
+  background: #12151a url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238d95a3' d='M1.4 0L6 4.6 10.6 0 12 1.4l-6 6-6-6z'/%3E%3C/svg%3E") no-repeat right 14px center;
+  color: #eceef2;
+  font: inherit;
+  font-size: 17px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.song-picker-toggle:focus,
+.song-picker-open .song-picker-toggle {
+  outline: 0;
+  border-color: #ffc83d;
+  -webkit-box-shadow: 0 0 0 3px rgba(255, 200, 61, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 200, 61, 0.2);
+}
+
+.song-picker-placeholder {
+  color: #8d95a3;
+}
+
+.song-picker-panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid #2f3540;
+  border-radius: 12px;
+  background: #12151a;
+  -webkit-box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.song-picker-above .song-picker-panel {
+  top: auto;
+  bottom: 100%;
+  margin: 0 0 6px;
+  -webkit-box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.song-picker-open .song-picker-panel {
+  display: block;
+}
+
+.song-picker-options {
+  position: relative;
+  max-height: 260px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.song-picker-options li {
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.song-picker-options li:hover,
+.song-picker-options .song-picker-current {
+  background: #1f232b;
+}
+
+.song-picker-options .song-picker-selected {
+  color: #ffc83d;
+  font-weight: bold;
+}
+
+.song-picker-options .song-picker-hidden {
+  display: none;
+}
+
+.song-picker-empty {
+  display: none;
+  margin: 8px 0 0;
+  padding: 11px 12px;
+  color: #8d95a3;
+  font-size: 15px;
+}
+
+.song-picker-no-results .song-picker-empty {
+  display: block;
 }
 
 .setlist-items {
@@ -1402,7 +1531,8 @@ body.light .button-add {
 
 body.light input,
 body.light select,
-body.light textarea {
+body.light textarea,
+body.light .song-picker-panel {
   border-color: #cfd4da;
   background: #fff;
   color: #16191e;
@@ -1426,6 +1556,31 @@ body.light .badge-muted {
 body.light .date-day,
 body.light .song-number,
 body.light .form .field-song label:before {
+  color: #a15c00;
+}
+
+body.light .song-picker-panel {
+  -webkit-box-shadow: 0 12px 32px rgba(22, 25, 30, 0.18);
+  box-shadow: 0 12px 32px rgba(22, 25, 30, 0.18);
+}
+
+body.light .song-picker-above .song-picker-panel {
+  -webkit-box-shadow: 0 -12px 32px rgba(22, 25, 30, 0.18);
+  box-shadow: 0 -12px 32px rgba(22, 25, 30, 0.18);
+}
+
+body.light .song-picker-toggle {
+  border-color: #cfd4da;
+  background-color: #fff;
+  color: #16191e;
+}
+
+body.light .song-picker-options li:hover,
+body.light .song-picker-options .song-picker-current {
+  background: #eef0f3;
+}
+
+body.light .song-picker-options .song-picker-selected {
   color: #a15c00;
 }
 

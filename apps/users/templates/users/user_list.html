@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Usuários · LeviChords{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Usuários</h1>
+      <p class="page-subtitle">{{ accounts|length }} usuário{{ accounts|length|pluralize }}</p>
+    </div>
+    {% if perms.auth.add_user %}
+      <a class="button button-primary fab" href="{% url 'users:create' %}">
+        {% include "includes/icon.html" with name="add" %}<span>Novo usuário</span>
+      </a>
+    {% endif %}
+  </div>
+
+  <ul class="item-list">
+    {% for account, role, editable in rows %}
+      <li>
+        {% if editable %}
+          <a class="item-link" href="{% url 'users:update' account.pk %}">
+        {% else %}
+          <span class="item-link">
+        {% endif %}
+          <span class="item-main">
+            <span class="item-title">{{ account.first_name|default:account.username }}</span>
+            <span class="item-detail">{{ account.username }}{% if account.pk == user.pk %} · você{% endif %}{% if not account.is_active %} · inativo{% endif %}</span>
+          </span>
+          <span class="badge{% if not account.is_active or not role %} badge-muted{% endif %}">{% if role %}{{ role.label }}{% else %}Sem nível{% endif %}</span>
+        {% if editable %}
+            <span class="chevron">{% include "includes/icon.html" with name="chevron" %}</span>
+          </a>
+        {% else %}
+          </span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

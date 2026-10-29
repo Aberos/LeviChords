@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import ProtectedError, QuerySet
 from django.forms import Form
@@ -24,9 +25,10 @@ from apps.songs.repository import SongRepository
 from apps.songs.services import SongService
 
 
-class SongListView(ListView[Song]):
+class SongListView(PermissionRequiredMixin, ListView[Song]):
     """List songs, optionally filtered by a search term."""
 
+    permission_required = "songs.view_song"
     template_name = "songs/song_list.html"
     context_object_name = "songs"
     paginate_by = 50
@@ -42,9 +44,10 @@ class SongListView(ListView[Song]):
         return context
 
 
-class SongDetailView(DetailView[Song]):
+class SongDetailView(PermissionRequiredMixin, DetailView[Song]):
     """Show a song in reading mode, transposed by ``semitons``."""
 
+    permission_required = "songs.view_song"
     model = Song
     template_name = "songs/song_detail.html"
     context_object_name = "song"
@@ -85,11 +88,13 @@ def render_preview(
 
 
 class SongCreateView(
+    PermissionRequiredMixin,
     SuccessMessageMixin[SongForm],
     CreateView[Song, SongForm],
 ):
     """Create a song, with a preview that does not save it."""
 
+    permission_required = "songs.add_song"
     model = Song
     form_class = SongForm
     template_name = "songs/song_form.html"
@@ -106,11 +111,13 @@ class SongCreateView(
 
 
 class SongUpdateView(
+    PermissionRequiredMixin,
     SuccessMessageMixin[SongForm],
     UpdateView[Song, SongForm],
 ):
     """Edit a song, with a preview that does not save it."""
 
+    permission_required = "songs.change_song"
     model = Song
     form_class = SongForm
     template_name = "songs/song_form.html"
@@ -126,9 +133,10 @@ class SongUpdateView(
         return super().post(request, *args, **kwargs)
 
 
-class SongDeleteView(DeleteView[Song, Form]):
+class SongDeleteView(PermissionRequiredMixin, DeleteView[Song, Form]):
     """Delete a song that is not used by any setlist."""
 
+    permission_required = "songs.delete_song"
     model = Song
     template_name = "confirm_delete.html"
     success_url = reverse_lazy("songs:list")

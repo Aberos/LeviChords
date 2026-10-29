@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ song.title }} · Repertório {{ setlist.date|date:"d/m/Y" }} · LeviChords{% endblock %}
+
+{% block body_class %}reading{% endblock %}
+
+{% block content %}
+  <div class="reader-nav">
+    <a class="back-link" href="{{ setlist.get_absolute_url }}">{% include "includes/icon.html" with name="back" %}<span>Repertório</span></a>
+    <span class="reader-nav-actions setlist-pager">
+      {% if current.previous_item %}
+        <a class="icon-button" href="{% url 'setlists:song' setlist.pk current.previous_number %}" aria-label="Música anterior: {{ current.previous_item.song.title }}" title="{{ current.previous_item.song.title }}">{% include "includes/icon.html" with name="previous" %}</a>
+      {% else %}
+        <span class="icon-button icon-button-disabled">{% include "includes/icon.html" with name="previous" %}</span>
+      {% endif %}
+      <span class="setlist-counter">{{ current.number }}/{{ current.total }}</span>
+      {% if current.next_item %}
+        <a class="icon-button" href="{% url 'setlists:song' setlist.pk current.next_number %}" aria-label="Próxima música: {{ current.next_item.song.title }}" title="{{ current.next_item.song.title }}">{% include "includes/icon.html" with name="chevron" %}</a>
+      {% else %}
+        <span class="icon-button icon-button-disabled">{% include "includes/icon.html" with name="chevron" %}</span>
+      {% endif %}
+    </span>
+  </div>
+
+  <article id="reader" class="reader">
+    {% include "songs/song_reader.html" %}
+  </article>
+
+  {% if current.next_item %}
+    <a class="button button-block setlist-next" href="{% url 'setlists:song' setlist.pk current.next_number %}">
+      <span class="setlist-next-label">Próxima</span>
+      <span class="index-title">{{ current.next_item.song.title }}</span>
+      {% if current.next_item.key %}<span class="badge">{{ current.next_item.key }}</span>{% endif %}
+    </a>
+  {% else %}
+    <a class="button button-block setlist-next" href="{{ setlist.get_absolute_url }}">
+      <span class="index-title">Fim do repertório</span>
+    </a>
+  {% endif %}
+
+  {% include "includes/reader_toolbar.html" %}
+{% endblock %}

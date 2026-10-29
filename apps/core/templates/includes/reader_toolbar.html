@@ -10,8 +10,8 @@
   <button type="button" data-action="font-down" aria-label="Diminuir letra">A−</button>
   <button type="button" data-action="font-up" aria-label="Aumentar letra">A+</button>
   {% if sheet %}
-    <a class="button" href="?semitons={{ sheet.semitones_down }}" aria-label="Baixar meio tom">Tom −</a>
-    <a class="button" href="?semitons={{ sheet.semitones_up }}" aria-label="Subir meio tom">Tom +</a>
+    <a class="button" id="key-down" data-transpose href="?semitons={{ sheet.semitones_down }}" aria-label="Baixar meio tom">Tom −</a>
+    <a class="button" id="key-up" data-transpose href="?semitons={{ sheet.semitones_up }}" aria-label="Subir meio tom">Tom +</a>
   {% endif %}
   <button type="button" data-action="pages" id="pages-button" aria-label="Virar páginas com um toque">Páginas</button>
   <button type="button" data-action="more" id="more-button" aria-label="Mais opções">Mais</button>

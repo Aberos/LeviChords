@@ -1,0 +1,14 @@
+<section id="previa" class="preview">
+  <div class="preview-header">
+    <h2>Pré-visualização</h2>
+    <a class="button button-small" href="#id_content">{% include "includes/icon.html" with name="edit" %}<span>Editar cifra</span></a>
+  </div>
+  <p class="preview-hint">Ainda não foi salva. Confira as cores: acordes em laranja e seções em azul.</p>
+  <div class="card preview-sheet">
+    {% if preview %}
+      {% include "includes/sheet.html" with lines=preview %}
+    {% else %}
+      <p class="empty-inline">A cifra está vazia.</p>
+    {% endif %}
+  </div>
+</section>

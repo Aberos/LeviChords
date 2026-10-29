@@ -1,0 +1,14 @@
+<header class="song-header" data-semitones-down="{{ sheet.semitones_down }}" data-semitones-up="{{ sheet.semitones_up }}">
+  <h1>{{ song.title }}</h1>
+  {% if song.artist %}<p class="artist">{{ song.artist }}</p>{% endif %}
+  {% if sheet.key %}
+    <p class="key">
+      Tom: <strong>{{ sheet.key }}</strong>
+      {% if sheet.semitones != restore_semitones %}
+        <span class="original-key">{{ restore_label }} {{ restore_key }}</span>
+        <a href="?semitons={{ restore_semitones }}" data-transpose>restaurar</a>
+      {% endif %}
+    </p>
+  {% endif %}
+</header>
+{% include "includes/sheet.html" with lines=sheet.lines %}

@@ -5,7 +5,7 @@ from typing import Any
 from django.contrib import messages
 from django.db.models import QuerySet
 from django.forms import Form
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import (
@@ -16,10 +16,12 @@ from django.views.generic import (
     UpdateView,
 )
 
+from apps.core.partials import is_partial
 from apps.setlists.forms import SetlistForm, SetlistItemFormSet
 from apps.setlists.models import Setlist
 from apps.setlists.repository import SetlistRepository
 from apps.setlists.services import SetlistService
+from apps.songs.services import SongService
 
 
 class HomeRedirectView(RedirectView):
@@ -46,7 +48,7 @@ class SetlistListView(ListView[Setlist]):
 
 
 class SetlistDetailView(DetailView[Setlist]):
-    """Show every song of a setlist in reading mode."""
+    """Show the songs of a setlist, each one opening on its own page."""
 
     template_name = "setlists/setlist_detail.html"
     context_object_name = "setlist"
@@ -55,10 +57,39 @@ class SetlistDetailView(DetailView[Setlist]):
         """Return setlists with their songs prefetched."""
         return SetlistRepository.with_songs()
 
+
+class SetlistSongView(DetailView[Setlist]):
+    """Show a single song of a setlist in reading mode."""
+
+    template_name = "setlists/setlist_song.html"
+    context_object_name = "setlist"
+
+    def get_queryset(self) -> QuerySet[Setlist]:
+        """Return setlists with their songs prefetched."""
+        return SetlistRepository.with_songs()
+
+    def get_template_names(self) -> list[str]:
+        """Return only the sheet fragment when the page asks for it."""
+        if is_partial(self.request):
+            return ["songs/song_reader.html"]
+        return super().get_template_names()
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        """Add the transposed sheets to the context."""
+        """Add the chosen song, transposed by ``semitons`` if given."""
         context = super().get_context_data(**kwargs)
-        context["sheets"] = SetlistService.build_sheets(self.object)
+        raw = self.request.GET.get("semitons")
+        semitones = None if raw is None else SongService.parse_semitones(raw)
+        current = SetlistService.open_song(
+            self.object, self.kwargs["number"], semitones
+        )
+        if current is None:
+            raise Http404("Música não encontrada no repertório.")
+        context["current"] = current
+        context["song"] = current.item.song
+        context["sheet"] = current.sheet
+        context["restore_semitones"] = current.item.semitones
+        context["restore_label"] = "no repertório"
+        context["restore_key"] = current.item.key
         return context
 
 

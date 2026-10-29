@@ -2,8 +2,6 @@
 
 {% block title %}Repertório {{ setlist.date|date:"d/m/Y" }} · LeviChords{% endblock %}
 
-{% block body_class %}reading{% endblock %}
-
 {% block content %}
   <div class="reader-nav">
     <a class="back-link" href="{% url 'setlists:list' %}">{% include "includes/icon.html" with name="back" %}<span>Repertórios</span></a>
@@ -13,43 +11,32 @@
     </span>
   </div>
 
-  <article id="reader" class="reader">
+  <article class="reader">
     <header class="song-header">
       <h1>{{ setlist.date|date:"l"|capfirst }}, {{ setlist.date|date:"d/m/Y" }}</h1>
       {% if setlist.description %}<p class="artist">{{ setlist.description }}</p>{% endif %}
     </header>
 
-    {% if sheets %}
-      <ol class="setlist-index">
-        {% for sheet in sheets %}
-          <li>
-            <a href="#musica-{{ forloop.counter }}">
-              <span class="song-number">{{ forloop.counter }}</span>
-              <span class="index-title">{{ sheet.song.title }}</span>
-              {% if sheet.key %}<span class="badge">{{ sheet.key }}</span>{% endif %}
-            </a>
-          </li>
-        {% endfor %}
-      </ol>
-
-      {% for sheet in sheets %}
-        <section id="musica-{{ forloop.counter }}" class="setlist-song">
-          <h2>
-            <span class="song-number">{{ forloop.counter }}</span>
-            <span class="index-title">{{ sheet.song.title }}</span>
-            {% if sheet.key %}<span class="badge">{{ sheet.key }}</span>{% endif %}
-          </h2>
-          {% include "includes/sheet.html" with lines=sheet.lines %}
-          <a class="back-to-top" href="#reader">{% include "includes/icon.html" with name="up" %}<span>Voltar à lista</span></a>
-        </section>
-      {% endfor %}
-    {% else %}
-      <div class="empty">
-        {% include "includes/icon.html" with name="setlist" %}
-        <p>Este repertório ainda não tem músicas.</p>
-      </div>
-    {% endif %}
+    {% with items=setlist.items.all %}
+      {% if items %}
+        <ol class="setlist-index">
+          {% for item in items %}
+            <li>
+              <a href="{% url 'setlists:song' setlist.pk forloop.counter %}">
+                <span class="song-number">{{ forloop.counter }}</span>
+                <span class="index-title">{{ item.song.title }}</span>
+                {% if item.key %}<span class="badge">{{ item.key }}</span>{% endif %}
+                <span class="chevron">{% include "includes/icon.html" with name="chevron" %}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <div class="empty">
+          {% include "includes/icon.html" with name="setlist" %}
+          <p>Este repertório ainda não tem músicas.</p>
+        </div>
+      {% endif %}
+    {% endwith %}
   </article>
-
-  {% include "includes/reader_toolbar.html" with sheet=None %}
 {% endblock %}

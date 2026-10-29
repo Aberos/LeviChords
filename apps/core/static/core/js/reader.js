@@ -24,6 +24,7 @@
   var PREVIOUS_KEYS = [33, 37, 38];
   var SCROLL_DELAYS = [0, 120, 70, 35];
   var SCROLL_LABELS = ["Rolar", "Rolar 1", "Rolar 2", "Rolar 3"];
+  var PARTIAL_PARAMETER = "parcial=1";
 
   function read(key, fallback) {
     try {
@@ -65,6 +66,7 @@
   var scrollLevel = 0;
   var scrollTimer = null;
   var hintTimer = null;
+  var transposeRequest = null;
   var lastWidth = window.innerWidth;
   var scrollButton = document.getElementById("scroll-button");
   var fitButton = document.getElementById("fit-button");
@@ -490,6 +492,79 @@
     }
   }
 
+  function transposeLink(element) {
+    while (element && element.getAttribute) {
+      if (element.tagName === "A" &&
+          element.getAttribute("data-transpose") !== null) {
+        return element;
+      }
+      element = element.parentNode;
+    }
+    return null;
+  }
+
+  function canTranspose() {
+    return Boolean(window.XMLHttpRequest && window.history &&
+      window.history.replaceState);
+  }
+
+  function partialUrl(url) {
+    return url + (url.indexOf("?") === -1 ? "?" : "&") + PARTIAL_PARAMETER;
+  }
+
+  function updateKeyLinks() {
+    var header = reader.querySelector(".song-header");
+    var down = document.getElementById("key-down");
+    var up = document.getElementById("key-up");
+    if (!header) {
+      return;
+    }
+    if (down) {
+      down.href = "?semitons=" + header.getAttribute("data-semitones-down");
+    }
+    if (up) {
+      up.href = "?semitons=" + header.getAttribute("data-semitones-up");
+    }
+  }
+
+  function showTransposed(url, html) {
+    var holder = document.createElement("div");
+    holder.innerHTML = html;
+    if (!holder.querySelector(".song-header") ||
+        !holder.querySelector(".sheet")) {
+      window.location.href = url;
+      return;
+    }
+    reader.innerHTML = html;
+    sheets = reader.querySelectorAll(".sheet");
+    updateKeyLinks();
+    window.history.replaceState(null, "", url);
+    applyLayout();
+  }
+
+  function transpose(url) {
+    var previous = transposeRequest;
+    transposeRequest = null;
+    if (previous) {
+      previous.abort();
+    }
+    var request = new XMLHttpRequest();
+    transposeRequest = request;
+    request.onreadystatechange = function () {
+      if (request.readyState !== 4 || request !== transposeRequest) {
+        return;
+      }
+      transposeRequest = null;
+      if (request.status === 200) {
+        showTransposed(url, request.responseText);
+      } else {
+        window.location.href = url;
+      }
+    };
+    request.open("GET", partialUrl(url), true);
+    request.send();
+  }
+
   var actions = {
     "font-down": function () {
       changeFont(-FONT_STEP);
@@ -509,6 +584,12 @@
 
   document.addEventListener("click", function (event) {
     var target = event.target;
+    var link = transposeLink(target);
+    if (link && canTranspose()) {
+      event.preventDefault();
+      transpose(link.href);
+      return;
+    }
     var action = target.getAttribute && target.getAttribute("data-action");
     if (action && actions[action]) {
       actions[action]();

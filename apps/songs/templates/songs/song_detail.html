@@ -14,20 +14,7 @@
   </div>
 
   <article id="reader" class="reader">
-    <header class="song-header">
-      <h1>{{ song.title }}</h1>
-      {% if song.artist %}<p class="artist">{{ song.artist }}</p>{% endif %}
-      {% if sheet.key %}
-        <p class="key">
-          Tom: <strong>{{ sheet.key }}</strong>
-          {% if sheet.semitones %}
-            <span class="original-key">original {{ song.key }}</span>
-            <a href="?semitons=0">restaurar</a>
-          {% endif %}
-        </p>
-      {% endif %}
-    </header>
-    {% include "includes/sheet.html" with lines=sheet.lines %}
+    {% include "songs/song_reader.html" %}
   </article>
 
   {% include "includes/reader_toolbar.html" %}

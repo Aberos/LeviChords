@@ -949,45 +949,53 @@ body.light .form .checkbox {
   min-width: 0;
 }
 
-.setlist-index .badge,
-.setlist-song h2 .badge {
+.setlist-index .badge {
   margin-left: 10px;
   font-size: 0.75em;
 }
 
-.setlist-song {
-  margin-top: 2em;
-  padding-top: 1em;
-  border-top: 2px solid #23272f;
+.setlist-index .chevron {
+  margin-left: 8px;
 }
 
-.setlist-song h2 {
+.icon-button-disabled,
+.icon-button-disabled:hover {
+  background: transparent;
+  color: #3a404b;
+  cursor: default;
+}
+
+.setlist-counter {
+  display: inline-block;
+  min-width: 3em;
+  color: #8d95a3;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+  line-height: 44px;
+}
+
+.setlist-next {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
   -webkit-box-align: center;
   -webkit-align-items: center;
   align-items: center;
-  margin: 0 0 0.6em;
-  font-size: 1.15em;
+  margin-top: 2em;
+  text-align: left;
 }
 
-.back-to-top {
-  display: inline-block;
-  margin-top: 1em;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: #1f232b;
+.setlist-next-label {
+  margin-right: 10px;
   color: #8d95a3;
-  font-size: 15px;
-  font-weight: bold;
-  text-decoration: none;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
-.back-to-top .icon {
-  width: 18px;
-  height: 18px;
-  margin: -3px 6px 0 0;
+.setlist-next .badge {
+  margin-left: 10px;
 }
 
 .reader-toolbar {
@@ -1367,8 +1375,7 @@ body.light .reader-toolbar button {
 body.light .button:hover,
 body.light .reader-toolbar button:hover,
 body.light .date-tile,
-body.light .song-number,
-body.light .back-to-top {
+body.light .song-number {
   background: #eef0f3;
 }
 
@@ -1422,8 +1429,13 @@ body.light .form .field-song label:before {
   color: #a15c00;
 }
 
-body.light .song-header,
-body.light .setlist-song {
+body.light .icon-button-disabled,
+body.light .icon-button-disabled:hover {
+  background: transparent;
+  color: #c4c9d0;
+}
+
+body.light .song-header {
   border-color: #dcdfe4;
 }
 

@@ -42,6 +42,22 @@ def test_detail_ignores_invalid_shift(
     assert "Tom: <strong>G</strong>" in response.content.decode()
 
 
+def test_detail_partial_returns_only_the_sheet(
+    logged_client: Client, song: Song
+) -> None:
+    """The partial request brings the transposed sheet without the page."""
+    response = logged_client.get(
+        song.get_absolute_url(), {"semitons": "2", "parcial": "1"}
+    )
+    content = response.content.decode()
+    assert response.status_code == 200
+    assert "Tom: <strong>A</strong>" in content
+    assert 'data-semitones-up="3"' in content
+    assert 'data-semitones-down="1"' in content
+    assert "<html" not in content
+    assert "reader-toolbar" not in content
+
+
 def test_create_song(logged_client: Client) -> None:
     """Logged users can create songs."""
     response = logged_client.post(
@@ -84,6 +100,22 @@ def test_create_preview_does_not_save(logged_client: Client) -> None:
     assert '<div class="line line-chords">G  D/F#</div>' in content
     assert "errorlist" not in content
     assert "Grande</textarea>" in content
+
+
+def test_create_partial_preview_returns_only_the_section(
+    logged_client: Client,
+) -> None:
+    """The partial preview brings the colored sheet without the form."""
+    response = logged_client.post(
+        reverse("songs:create") + "?parcial=1",
+        {"title": "", "key": "", "content": "G  D/F#\nGrande", "preview": "1"},
+    )
+    content = response.content.decode()
+    assert response.status_code == 200
+    assert not Song.objects.exists()
+    assert 'id="previa"' in content
+    assert '<div class="line line-chords">G  D/F#</div>' in content
+    assert "<form" not in content
 
 
 def test_update_preview_keeps_the_saved_song(

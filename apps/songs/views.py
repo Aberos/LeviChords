@@ -7,7 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import ProtectedError, QuerySet
 from django.forms import Form
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -17,6 +17,7 @@ from django.views.generic import (
     UpdateView,
 )
 
+from apps.core.partials import is_partial
 from apps.songs.forms import SongForm
 from apps.songs.models import Song
 from apps.songs.repository import SongRepository
@@ -48,6 +49,12 @@ class SongDetailView(DetailView[Song]):
     template_name = "songs/song_detail.html"
     context_object_name = "song"
 
+    def get_template_names(self) -> list[str]:
+        """Return only the sheet fragment when the page asks for it."""
+        if is_partial(self.request):
+            return ["songs/song_reader.html"]
+        return super().get_template_names()
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Add the transposed sheet to the context."""
         context = super().get_context_data(**kwargs)
@@ -55,6 +62,9 @@ class SongDetailView(DetailView[Song]):
             self.request.GET.get("semitons")
         )
         context["sheet"] = SongService.build_sheet(self.object, semitones)
+        context["restore_semitones"] = 0
+        context["restore_label"] = "original"
+        context["restore_key"] = self.object.key
         return context
 
 
@@ -63,8 +73,12 @@ def render_preview(
 ) -> HttpResponse:
     """Show the posted sheet colored, without validating or saving it."""
     data = view.request.POST
-    form = view.get_form_class()(initial=data.dict(), instance=view.object)
     preview = SongService.preview(data.get("content", ""))
+    if is_partial(view.request):
+        return render(
+            view.request, "songs/song_preview.html", {"preview": preview}
+        )
+    form = view.get_form_class()(initial=data.dict(), instance=view.object)
     return view.render_to_response(
         view.get_context_data(form=form, preview=preview)
     )
